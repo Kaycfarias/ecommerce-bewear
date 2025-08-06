@@ -21,6 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
 
 const fromSchema = z.object({
   email: z.email("Email inválido"),
@@ -38,11 +39,8 @@ const SignInForm = () => {
     },
   });
 
-  
-
-  function onSubmit(values: FormValues) {
-    console.log("FORMULARIO VALIDADO ENVIADO");
-    console.log(values);
+  async function onSubmit(values: FormValues) {
+    
   }
 
   return (

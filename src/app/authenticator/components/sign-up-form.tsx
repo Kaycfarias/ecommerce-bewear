@@ -21,6 +21,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const fromSchema = z
   .object({
@@ -39,6 +42,7 @@ const fromSchema = z
 type FormValues = z.infer<typeof fromSchema>;
 
 const SignUpForm = () => {
+  const router = useRouter();
   const form = useForm<FormValues>({
     resolver: zodResolver(fromSchema),
     defaultValues: {
@@ -49,9 +53,25 @@ const SignUpForm = () => {
     },
   });
 
-  function onSubmit(values: FormValues) {
-    console.log("FORMULARIO VALIDADO ENVIADO");
-    console.log(values);
+  async function onSubmit(values: FormValues) {
+    const { data, error } = await authClient.signUp.email({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        },
+        onError: (error) => {
+          if (
+            error.error.code === authClient.$ERROR_CODES.USER_ALREADY_EXISTS
+          ) {
+            toast.message("Email ja cadastrado");
+          }
+          form.setError("email", { message: "Email ja cadastrado" });
+        },
+      },
+    });
   }
 
   return (
