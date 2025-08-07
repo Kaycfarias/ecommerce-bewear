@@ -38,7 +38,7 @@ const SignInForm = () => {
     resolver: zodResolver(fromSchema),
     defaultValues: {
       email: "",
-      password: "",
+      password: "", 
     },
   });
 
@@ -73,7 +73,7 @@ const SignInForm = () => {
 
   return (
     <>
-      <Card>
+      <Card className="w-full">
         <CardHeader>
           <CardTitle>Entrar</CardTitle>
           <CardDescription>Faca login para continuar</CardDescription>
