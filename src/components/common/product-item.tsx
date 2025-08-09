@@ -19,7 +19,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
         alt={firstVariant.name}
         width={200}
         height={200}
-        className="rounded-3xl"
+        className="rounded-3xl shadow-sm"
       />
       <div className="flex max-w-[200px] flex-col gap-1">
         <p className="truncate text-sm font-medium">{product.name}</p>
