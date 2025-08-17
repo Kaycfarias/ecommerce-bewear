@@ -1,29 +1,27 @@
 import { productVariantTable } from "@/db/schema";
 import Image from "next/image";
-import Link from "next/link";
+
+import { useQueryState } from "nuqs";
 
 interface VariantSelectorProps {
-  product: string;
-  selectedVariant: string;
   variants: (typeof productVariantTable.$inferSelect)[];
 }
 
-const VariantSelector = ({
-  product,
-  variants,
-  selectedVariant,
-}: VariantSelectorProps) => {
+const VariantSelector = ({ variants }: VariantSelectorProps) => {
+  const [variantName, setVariantName] = useQueryState("variant");
   return (
     <div className="flex items-center gap-4">
       {variants.map((variant) => (
-        <Link
+        <div
           key={variant.id}
-          href={`/product/${product}?variant=${variant.name}`}
           className={
-            selectedVariant === variant.slug
+            variantName === variant.name
               ? "border-primary rounded-xl border-2"
               : ""
           }
+          onClick={() => {
+            setVariantName(variant.name);
+          }}
         >
           <Image
             width={68}
@@ -32,7 +30,7 @@ const VariantSelector = ({
             alt={variant.name}
             className="rounded-xl"
           />
-        </Link>
+        </div>
       ))}
     </div>
   );

@@ -36,9 +36,7 @@ const VariantPage = ({ product }: variantPageProps) => {
       )}
       <div className="px-5">
         <VariantSelector
-          product={product.slug}
           variants={variants}
-          selectedVariant={selectedVariant.slug}
         />
       </div>
       <div className="px-5">
