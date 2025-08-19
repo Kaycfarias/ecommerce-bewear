@@ -35,9 +35,7 @@ const VariantPage = ({ product }: variantPageProps) => {
         />
       )}
       <div className="px-5">
-        <VariantSelector
-          variants={variants}
-        />
+        <VariantSelector variants={variants} />
       </div>
       <div className="px-5">
         {/* DESICRICAO */}
