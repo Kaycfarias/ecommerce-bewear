@@ -16,7 +16,7 @@ interface ProductVariantPageProps {
 }
 
 const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
-  const { slug } = await params;
+const { slug } = await params;
   const product = await db.query.productTable.findFirst({
     where: eq(productTable.slug, slug),
     with: { variants: true },
