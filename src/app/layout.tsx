@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import ReactQueryPtovider from "@/providers/react-query";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <NuqsAdapter>
+          <ReactQueryPtovider>
+            {children}
+          </ReactQueryPtovider>
+        </NuqsAdapter>
         <Toaster />
       </body>
     </html>

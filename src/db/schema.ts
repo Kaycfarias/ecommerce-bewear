@@ -184,7 +184,7 @@ export const cartRelations = relations(cartTable, ({ one, many }) => ({
     fields: [cartTable.shippingAddressId],
     references: [shippingAddressTable.id],
   }),
-  many: many(cartItemTable),
+  items: many(cartItemTable),
 }));
 
 export const cartItemTable = pgTable("cart_item", {
@@ -192,7 +192,9 @@ export const cartItemTable = pgTable("cart_item", {
   cartId: uuid("cart_id")
     .notNull()
     .references(() => cartTable.id, { onDelete: "cascade" }),
-  productVariantId: uuid("product_variant_id"),
+  productVariantId: uuid("product_variant_id")
+    .notNull()
+    .references(() => productVariantTable.id, { onDelete: "cascade" }),
   quantity: integer("quantity").notNull().default(1),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -203,7 +205,7 @@ export const cartItemRelations = relations(cartItemTable, ({ one }) => ({
     references: [cartTable.id],
   }),
   productVariant: one(productVariantTable, {
-    fields: [cartItemTable.id],
+    fields: [cartItemTable.productVariantId],
     references: [productVariantTable.id],
   }),
 }));
