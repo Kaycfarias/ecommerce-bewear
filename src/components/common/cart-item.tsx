@@ -6,17 +6,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { removeProductFromCart } from "@/actions/remove-cart-product";
 import { toast } from "sonner";
 import { decreaseCartProductQuantity } from "@/actions/decrease-cart-product-quantity";
+import { addProductToCart } from "@/actions/add-cart-product";
 
 interface CartItemProps {
   id: string;
   productName: string;
+  productVariantId: string;
   productVariantName: string;
   productVariantImageUrl: string;
   productVariantPriceInCents: number;
   quantity: number;
 }
 
-const CartItem = ({ id, productName, productVariantName, productVariantImageUrl, productVariantPriceInCents, quantity }: CartItemProps) => {
+const CartItem = ({ id, productName, productVariantId, productVariantName, productVariantImageUrl, productVariantPriceInCents, quantity }: CartItemProps) => {
   const queryClient = useQueryClient()
   const removeProductFromCartMutation = useMutation({
     mutationKey: ["remove-cart-product"],
@@ -33,6 +35,15 @@ const CartItem = ({ id, productName, productVariantName, productVariantImageUrl,
       queryClient.invalidateQueries({ queryKey: ["cart"] })
     }
   })
+
+  const increaseCartProductQuantityMutation = useMutation({
+    mutationKey: ["increase-cart-product-quantity"],
+    mutationFn: () => addProductToCart({ productVariantId, quantity: 1 }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] })
+    }
+  }
+  )
 
   const handleDeleteClick = () => {
     removeProductFromCartMutation.mutate(undefined, {
@@ -52,6 +63,15 @@ const CartItem = ({ id, productName, productVariantName, productVariantImageUrl,
       }
     })
   }
+
+  const handleIncreaseQuantityClick = () => {
+    increaseCartProductQuantityMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success("Quantidade do produto atualizada.")
+      }
+    })
+  }
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
@@ -71,7 +91,7 @@ const CartItem = ({ id, productName, productVariantName, productVariantImageUrl,
 
           <p className="text-xs font-medium">{quantity}</p>
 
-          <Button variant="ghost" className="h-4 w-4" onClick={() => { }}>
+          <Button variant="ghost" className="h-4 w-4" onClick={handleIncreaseQuantityClick}>
             <PlusIcon />
           </Button>
         </div>
