@@ -70,10 +70,11 @@ const ProductActions = ({ product }: ProductActionsProps) => {
               </div>
             ))}
           </div>
+          {/*<h3 className="text-muted-foreground text-sm">{selectedVariant.name}</h3>*/}
         </div>
         <div className="px-5">
           {/* DESICRICAO */}
-          <h2 className="text-lg font-semibold">{product.description}</h2>
+          <h2 className="text-lg font-semibold">{product.name}</h2>
           <h3 className="text-muted-foreground text-sm">{product.description}</h3>
           <h3 className="text-lg font-semibold">
             {formatCentsToBRL(selectedVariant.priceInCents)}

@@ -5,7 +5,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../u
 import { ShoppingBasketIcon } from "lucide-react"
 import { useQuery } from "@tanstack/react-query";
 import { getCart } from "@/actions/get-cart";
-import Image from "next/image";
 import CartItem from "./cart-item";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
@@ -50,7 +49,7 @@ const Cart = () => {
             </ScrollArea>
           </div>
           {cart?.items && cart?.items.length > 0 && (
-            <div className="flex flex-col gap-4">
+            <div className="flex h-max flex-col gap-4">
               <Separator />
               <div className="flex items-center justify-between text-xs font-medium">
                 <p>Subtotal</p>
@@ -61,16 +60,15 @@ const Cart = () => {
                 <p>Frete</p>
                 <p>GRÁTIS</p>
               </div>
-
               <Separator />
               <div className="flex items-center justify-between text-xs font-medium">
                 <p>Total</p>
                 <p>{formatCentsToBRL(cart?.totalPriceInCents ?? 0)}</p>
               </div>
-              <Separator />
-              <Button>
+              <Button className="mt-5 rounded-full" variant={"default"}>
                 Finalizar compra
               </Button>
+              <div className="flex items-center justify-between text-xs font-medium">asa</div>
             </div>
 
           )}
