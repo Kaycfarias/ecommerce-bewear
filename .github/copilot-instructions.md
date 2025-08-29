@@ -54,6 +54,46 @@ src/actions/[action-name]/
 - **Queries**: Use `db.query.[tableName].findFirst/findMany()` syntax
 - **Auth Integration**: BetterAuth uses `userTable`, `sessionTable`, `accountTable`, `verificationTable`
 
+#### Schema Rules & Conventions
+
+**Table Naming**: Use `[name]Table` pattern (e.g., `userTable`, `productTable`, `cartItemTable`)
+
+**Primary Keys**:
+
+- Auth tables: `text("id").primaryKey()`
+- Business tables: `uuid().primaryKey().defaultRandom()`
+
+**Foreign Keys**: Always include cascade rules
+
+- Delete cascade: `{ onDelete: "cascade" }` for dependent records
+- Set null: `{ onDelete: "set null" }` for optional references
+
+**Required Timestamps**:
+
+- `createdAt: timestamp("created_at").notNull().defaultNow()`
+- `updatedAt: timestamp("updated_at").notNull().defaultNow()` (when needed)
+
+**Relations Pattern**:
+
+```typescript
+export const tableRelations = relations(tableName, ({ one, many }) => ({
+  // Define all relationships here
+}));
+```
+
+**Field Types**:
+
+- IDs: `uuid()` for business entities, `text()` for auth
+- Money: `integer("price_in_cents")` (always in cents)
+- Text: `text()` for strings, `text().notNull()` for required
+- Flags: `boolean().notNull().$defaultFn(() => false)`
+
+**Naming Convention**:
+
+- Database columns: snake_case (`created_at`, `user_id`)
+- TypeScript fields: camelCase (`createdAt`, `userId`)
+- Use descriptive names (`RecipientName`, `priceInCents`, `imageUrl`)
+
 ## Development Rules
 
 ### Code Style

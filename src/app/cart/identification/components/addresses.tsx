@@ -13,10 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useCreateShippingAddress } from "@/hooks/mutations/use-create-shipping-address";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const customerSchema = z.object({
@@ -49,6 +52,8 @@ export const Addresses = () => {
     null,
   );
 
+  const createShippingAddressMutation = useCreateShippingAddress();
+
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
@@ -66,8 +71,15 @@ export const Addresses = () => {
     },
   });
 
-  const onSubmit = (values: CustomerFormValues) => {
-    console.log(values);
+  const onSubmit = async (values: CustomerFormValues) => {
+    try {
+      await createShippingAddressMutation.mutateAsync(values);
+      toast.success("Endereço salvo com sucesso!");
+      form.reset();
+      setSelelectedAddresses(null);
+    } catch {
+      toast.error("Erro ao salvar endereço. Tente novamente.");
+    }
   };
 
   return (
@@ -302,15 +314,16 @@ export const Addresses = () => {
                   </div>
 
                   <div className="flex gap-2 pt-4">
-                    <Button type="submit" className="flex-1">
-                      Salvar Dados
-                    </Button>
                     <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setSelelectedAddresses(null)}
+                      type="submit"
+                      className="flex-1"
+                      disabled={createShippingAddressMutation.isPending}
                     >
-                      Cancelar
+                      {createShippingAddressMutation.isPending ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Salvar Endereço"
+                      )}
                     </Button>
                   </div>
                 </form>
