@@ -42,7 +42,7 @@ export const createShippingAddress = async (
     })
     .returning();
 
-  revalidatePath("cart/identification");
+  revalidatePath("cart/identification/");
 
   return newAddress[0];
 };

@@ -1,20 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 import { LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Avatar, AvatarImage } from "../ui/avatar";
 import {
   Sheet,
-  SheetContent,
-  SheetTrigger,
   SheetClose,
+  SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetTrigger,
 } from "../ui/sheet";
-import { authClient } from "@/lib/auth-client";
-import { Avatar, AvatarImage } from "../ui/avatar";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import Link from "next/link";
 import Cart from "./cart";
 
 const Header = () => {
@@ -25,6 +25,7 @@ const Header = () => {
         <Image src="/next.svg" alt="Logo" width={120} height={26.14} />
       </Link>
       <div className="flex items-center gap-3">
+        <Cart />
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
@@ -82,7 +83,6 @@ const Header = () => {
             <SheetClose />
           </SheetContent>
         </Sheet>
-        <Cart />
       </div>
     </header>
   );

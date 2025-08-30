@@ -27,7 +27,7 @@ export const decreaseCartProductQuantity = async (data: z.infer<typeof decreaseC
   })
 
   if (!cartItem) {
-    throw new Error("Product variant not found in cart");
+    throw new Error("NotFound: Product variant not found in cart");
   }
 
   const cartDoesNotBelongToUser = cartItem.cart.userId !== session.user.id;

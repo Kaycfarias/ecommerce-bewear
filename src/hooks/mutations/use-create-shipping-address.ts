@@ -1,5 +1,6 @@
 import { createShippingAddress } from "@/actions/create-shipping-address";
 import { CreateShippingAddressSchema } from "@/actions/create-shipping-address/schema";
+import { shippingAddressTable } from "@/db/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUseUserAddressesQueryKey } from "../queries/use-user-addresses";
 
@@ -13,8 +14,19 @@ export const useCreateShippingAddress = () => {
     mutationKey: getCreateShippingAddressMutationKey(),
     mutationFn: (data: CreateShippingAddressSchema) =>
       createShippingAddress(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: getUseUserAddressesQueryKey() });
+    onSuccess: (newAddress) => {
+      queryClient.invalidateQueries({ 
+        queryKey: getUseUserAddressesQueryKey(),
+        refetchType: 'active'
+      });
+      
+      queryClient.setQueryData(
+        getUseUserAddressesQueryKey(),
+        (oldData: typeof shippingAddressTable.$inferSelect[] | undefined) => {
+          if (!oldData) return [newAddress];
+          return [newAddress, ...oldData];
+        }
+      );
     },
   });
 };

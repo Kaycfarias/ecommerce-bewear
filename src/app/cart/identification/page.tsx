@@ -34,12 +34,17 @@ const IndetificationPage = async () => {
   }
   const shippingAddresses = await db.query.shippingAddressTable.findMany({
     where: eq(shippingAddressTable.userId, session.user.id),
+    orderBy: (shippingAddress, { desc }) => [desc(shippingAddress.createdAt)],
   });
+
   return (
     <>
       <Header />
       <div className="px-5">
-        <Addresses shippingAddresses={shippingAddresses} defaultShippingAddressId={cart.shippingAddress?.id || null} />
+        <Addresses
+          shippingAddresses={shippingAddresses}
+          defaultShippingAddressId={cart.shippingAddress?.id || null}
+        />
       </div>
     </>
   );

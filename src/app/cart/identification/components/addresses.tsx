@@ -1,6 +1,5 @@
 "use client";
 
-import { getCart } from "@/actions/get-cart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -21,7 +20,7 @@ import { useUpdateCartShippingAddress } from "@/hooks/mutations/use-update-cart-
 import { useUserAddresses } from "@/hooks/queries/use-user-addresses";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { toast } from "sonner";
@@ -61,14 +60,19 @@ export const Addresses = ({
   shippingAddresses,
   defaultShippingAddressId,
 }: AddressesProps) => {
-  const [selectedAddress, setSelectedAddress] = useState<string | null>(
-    defaultShippingAddressId,
-  );
   const createShippingAddressMutation = useCreateShippingAddress();
   const updateCartShippingAddressMutation = useUpdateCartShippingAddress();
   const { data: userAddresses, isLoading } = useUserAddresses({
     initialData: shippingAddresses,
   });
+
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (defaultShippingAddressId) {
+      setSelectedAddress(defaultShippingAddressId);
+    }
+  }, [defaultShippingAddressId]);
 
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerSchema),
@@ -89,18 +93,16 @@ export const Addresses = ({
 
   const onSubmit = async (values: CustomerFormValues) => {
     try {
-      const newAddress =
-        await createShippingAddressMutation.mutateAsync(values);
-      toast.success("Endereço salvo com sucesso!");
+      const newAddress = await createShippingAddressMutation.mutateAsync(values);
+      
       form.reset();
       setSelectedAddress(newAddress.id);
-
-      // Vincula o novo endereço ao carrinho
+      
       await updateCartShippingAddressMutation.mutateAsync({
         shippingAddressId: newAddress.id,
       });
 
-      toast.success("Endereço vinculado ao carrinho!");
+      toast.success("Endereço criado e vinculado ao carrinho!");
     } catch {
       toast.error("Erro ao salvar endereço. Tente novamente.");
     }
@@ -114,8 +116,6 @@ export const Addresses = ({
         shippingAddressId: selectedAddress,
       });
       toast.success("Endereço vinculado ao carrinho!");
-      // Aqui você pode redirecionar para a página de pagamento
-      // router.push("/cart/payment");
     } catch {
       toast.error("Erro ao vincular endereço. Tente novamente.");
     }
@@ -148,26 +148,21 @@ export const Addresses = ({
                         id={address.id}
                         className="mt-1"
                       />
-                      <div className="flex-1 space-y-2">
+                      <div className="flex-1">
                         <Label htmlFor={address.id} className="cursor-pointer">
-                          <div className="space-y-1">
-                            <div className="font-semibold text-card-foreground">
+                          <div className="text-sm">
+                            <span className="font-semibold text-card-foreground">
                               {address.RecipientName}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
+                            </span>
+                            {/* TODO: USE ACCORDEON COMPONENT FOR ADDRESS DETAILS */}
+                            <span className="text-muted-foreground ml-2">
                               {address.street}, {address.number}
-                              {address.complement && `, ${address.complement}`}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {address.neighborhood}, {address.city} -{" "}
-                              {address.state}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              CEP: {address.zipCode}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {address.phone} • {address.email}
-                            </div>
+                              {address.complement &&
+                                `, ${address.complement}`}{" "}
+                              - {address.neighborhood}, {address.city}/
+                              {address.state} - CEP: {address.zipCode} -{" "}
+                              {address.phone}
+                            </span>
                           </div>
                         </Label>
                       </div>
