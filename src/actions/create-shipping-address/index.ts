@@ -19,7 +19,7 @@ export const createShippingAddress = async (
   });
 
   if (!session?.user) {
-    throw new Error("User not authenticated");
+    throw new Error("Unauthorized: User not authenticated");
   }
 
   const newAddress = await db

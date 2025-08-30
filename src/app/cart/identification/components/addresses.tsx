@@ -13,7 +13,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
 import { useCreateShippingAddress } from "@/hooks/mutations/use-create-shipping-address";
+import { useUserAddresses } from "@/hooks/queries/use-user-addresses";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -53,6 +55,7 @@ export const Addresses = () => {
   );
 
   const createShippingAddressMutation = useCreateShippingAddress();
+  const { data: userAddresses, isLoading } = useUserAddresses();
 
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(customerSchema),
@@ -88,249 +91,303 @@ export const Addresses = () => {
         <CardTitle>Identificação</CardTitle>
       </CardHeader>
       <CardContent>
-        <RadioGroup
-          value={selelectedAddresses}
-          onValueChange={setSelelectedAddresses}
-        >
-          <div>
-            <Card>
-              <CardContent>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="add_new" id="add_new" />
-                  <Label htmlFor="add_new">Adicionar novo endereço</Label>
+        <div className="space-y-6">
+            <RadioGroup
+              value={selelectedAddresses}
+              onValueChange={setSelelectedAddresses}
+              className="border rounded-lg p-4"
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center p-4">
+                  <Loader2 className="animate-spin h-6 w-6" />
+                  <span className="ml-2">Carregando endereços...</span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </RadioGroup>
-        {selelectedAddresses === "add_new" && (
-          <Card className="mt-4">
-            <CardHeader>
-              <CardTitle>Dados do Cliente</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="email"
-                              placeholder="exemplo@email.com"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="fullName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nome Completo</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Digite seu nome completo"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="cpf"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>CPF</FormLabel>
-                          <FormControl>
-                            <PatternFormat
-                              customInput={Input}
-                              format="###.###.###-##"
-                              mask="_"
-                              placeholder="000.000.000-00"
-                              onValueChange={(values) => {
-                                field.onChange(values.value);
-                              }}
-                              value={field.value}
-                              isAllowed={(values) => {
-                                const cleanValue = values.value;
-                                return cleanValue.length <= 11;
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Celular</FormLabel>
-                          <FormControl>
-                            <PatternFormat
-                              customInput={Input}
-                              format="(##) #####-####"
-                              mask="_"
-                              placeholder="(00) 00000-0000"
-                              onValueChange={(values) => {
-                                field.onChange(values.value);
-                              }}
-                              value={field.value}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="zipCode"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>CEP</FormLabel>
-                          <FormControl>
-                            <PatternFormat
-                              customInput={Input}
-                              format="#####-###"
-                              mask="_"
-                              placeholder="00000-000"
-                              onValueChange={(values) => {
-                                field.onChange(values.value);
-                              }}
-                              value={field.value}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Endereço</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Digite o endereço" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="number"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Número</FormLabel>
-                          <FormControl>
-                            <Input placeholder="123" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="complement"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Complemento (opcional)</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Apartamento, bloco, etc."
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="neighborhood"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bairro</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Nome do bairro" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cidade</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Nome da cidade" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="state"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Estado (UF)</FormLabel>
-                          <FormControl>
-                            <Input placeholder="SP" maxLength={2} {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex gap-2 pt-4">
-                    <Button
-                      type="submit"
-                      className="flex-1"
-                      disabled={createShippingAddressMutation.isPending}
+              ) : (
+                <>
+                  {userAddresses?.map((address) => (
+                    <div key={address.id}>
+                      <div className="flex items-start space-x-3">
+                        <RadioGroupItem
+                          value={address.id}
+                          id={address.id}
+                          className="mt-1"
+                        />
+                        <div className="flex-1 space-y-2">
+                          <Label
+                            htmlFor={address.id}
+                            className="cursor-pointer"
+                          >
+                            <div className="space-y-1">
+                              <div className="font-semibold text-card-foreground">
+                                {address.RecipientName}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {address.street}, {address.number}
+                                {address.complement &&
+                                  `, ${address.complement}`}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {address.neighborhood}, {address.city} -{" "}
+                                {address.state}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                CEP: {address.zipCode}
+                              </div>
+                              <div className="text-sm text-muted-foreground">
+                                {address.phone} • {address.email}
+                              </div>
+                            </div>
+                          </Label>
+                        </div>
+                      </div>
+                      <Separator className="mt-2" />
+                    </div>
+                  ))}
+                  <div className="flex items-center space-x-3">
+                    <RadioGroupItem value="add_new" id="add_new" />
+                    <Label
+                      htmlFor="add_new"
+                      className="cursor-pointer font-medium"
                     >
-                      {createShippingAddressMutation.isPending ? (
-                        <Loader2 className="animate-spin" />
-                      ) : (
-                        "Salvar Endereço"
-                      )}
-                    </Button>
+                      Adicionar novo endereço
+                    </Label>
                   </div>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        )}
+                </>
+              )}
+            </RadioGroup>
+          </div>
+
+          {selelectedAddresses === "add_new" && (
+            <div className="pt-5">
+              <h3 className="text-lg font-semibold mb-6">Dados do Cliente</h3>
+              <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                placeholder="exemplo@email.com"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="fullName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nome Completo</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Digite seu nome completo"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="cpf"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>CPF</FormLabel>
+                            <FormControl>
+                              <PatternFormat
+                                customInput={Input}
+                                format="###.###.###-##"
+                                mask="_"
+                                placeholder="000.000.000-00"
+                                onValueChange={(values) => {
+                                  field.onChange(values.value);
+                                }}
+                                value={field.value}
+                                isAllowed={(values) => {
+                                  const cleanValue = values.value;
+                                  return cleanValue.length <= 11;
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Celular</FormLabel>
+                            <FormControl>
+                              <PatternFormat
+                                customInput={Input}
+                                format="(##) #####-####"
+                                mask="_"
+                                placeholder="(00) 00000-0000"
+                                onValueChange={(values) => {
+                                  field.onChange(values.value);
+                                }}
+                                value={field.value}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="zipCode"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>CEP</FormLabel>
+                            <FormControl>
+                              <PatternFormat
+                                customInput={Input}
+                                format="#####-###"
+                                mask="_"
+                                placeholder="00000-000"
+                                onValueChange={(values) => {
+                                  field.onChange(values.value);
+                                }}
+                                value={field.value}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Endereço</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Digite o endereço"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="number"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Número</FormLabel>
+                            <FormControl>
+                              <Input placeholder="123" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="complement"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Complemento (opcional)</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Apartamento, bloco, etc."
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="neighborhood"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Bairro</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nome do bairro" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Cidade</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Nome da cidade" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="state"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Estado (UF)</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="SP"
+                                maxLength={2}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="flex justify-center w-full">
+                      <Button
+                      className="w-full md:w-auto"
+                        type="submit"
+                        disabled={createShippingAddressMutation.isPending}
+                      >
+                        {createShippingAddressMutation.isPending ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          "Salvar Endereço"
+                        )}
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </div>
+            )}
       </CardContent>
     </Card>
   );

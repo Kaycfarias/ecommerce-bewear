@@ -14,13 +14,13 @@ export const addProductToCart = async (data: AddProductToCartSchema) => {
     headers: await headers(),
   });
   if (!session?.user) {
-    throw new Error("User not authenticated");
+    throw new Error("Unauthorized: User not authenticated");
   }
   const productVariant = await db.query.productVariantTable.findFirst({
     where: (productVariant, { eq }) => eq(productVariant.id, data.productVariantId),
   });
   if (!productVariant) {
-    throw new Error("Product variant not found");
+    throw new Error("Error: Product variant not found");
   }
 
   const cart = await db.query.cartTable.findFirst({
