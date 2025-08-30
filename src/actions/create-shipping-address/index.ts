@@ -3,6 +3,7 @@
 import { db } from "@/db";
 import { shippingAddressTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import {
   createShippingAddressSchema,
@@ -40,6 +41,8 @@ export const createShippingAddress = async (
       country: "Brasil",
     })
     .returning();
+    
+  revalidatePath("/cart/identification");
 
   return newAddress[0];
 };
