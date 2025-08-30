@@ -41,8 +41,8 @@ export const createShippingAddress = async (
       country: "Brasil",
     })
     .returning();
-    
-  revalidatePath("/cart/identification");
+
+  revalidatePath("cart/identification");
 
   return newAddress[0];
 };
