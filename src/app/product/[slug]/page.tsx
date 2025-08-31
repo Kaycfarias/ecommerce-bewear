@@ -1,5 +1,4 @@
 import Footer from "@/components/common/footer";
-import Header from "@/components/common/header";
 import ProductList from "@/components/common/pruduct-list";
 import { db } from "@/db";
 import { productTable } from "@/db/schema";
@@ -28,7 +27,6 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
   });
   return (
     <>
-      <Header />
       <div className="flex flex-col space-y-6">
         <ProductActions product={product} />
         <ProductList products={likelyProducts} title="Produtos relacionados" />

@@ -1,18 +1,24 @@
 "use client";
 
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
-import { ShoppingBasketIcon } from "lucide-react"
-import CartItem from "./cart-item";
+import { formatCentsToBRL } from "@/app/helper/money";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/queries/use-cart";
+import { ShoppingBasketIcon } from "lucide-react";
+import Link from "next/link";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
-import { formatCentsToBRL } from "@/app/helper/money";
-import { useCart } from "@/hooks/queries/use-cart";
-import Link from "next/link";
-
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import CartItem from "./cart-item";
 
 const Cart = () => {
-  const { data: cart } = useCart()
+  const { data: cart } = useCart();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -22,15 +28,12 @@ const Cart = () => {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>
-            Carrinho
-          </SheetTitle>
+          <SheetTitle>Carrinho</SheetTitle>
         </SheetHeader>
         <div className="flex h-full flex-col px-2 pb-8">
           <div className="flex h-full max-h-full flex-col overflow-hidden">
             <ScrollArea className="h-full">
               <div className="flex h-full flex-col gap-8">
-
                 {cart?.items?.map((item) => (
                   <CartItem
                     key={item.id}
@@ -39,7 +42,9 @@ const Cart = () => {
                     productVariantId={item.productVariant.id}
                     productVariantName={item.productVariant.name}
                     productVariantImageUrl={item.productVariant.imageUrl}
-                    productVariantPriceInCents={item.productVariant.priceInCents}
+                    productVariantPriceInCents={
+                      item.productVariant.priceInCents
+                    }
                     quantity={item.quantity}
                   />
                 ))}
@@ -63,17 +68,21 @@ const Cart = () => {
                 <p>Total</p>
                 <p>{formatCentsToBRL(cart?.totalPriceInCents ?? 0)}</p>
               </div>
-              <Button className="mt-5 rounded-full" variant={"default"}>
-                <Link href="/cart/identification" className="w-full">
-                  Finalizar compra
-                </Link>
-              </Button>
+              <SheetClose asChild>
+                <Button
+                  className="mt-5 rounded-full"
+                  variant={"default"}
+                  asChild
+                >
+                  <Link href="/cart/identification">Finalizar compra</Link>
+                </Button>
+              </SheetClose>
             </div>
           )}
         </div>
       </SheetContent>
     </Sheet>
-  )
-}
+  );
+};
 
-export default Cart
+export default Cart;

@@ -1,6 +1,5 @@
 import CategorySelector from "@/components/common/category-selector";
 import Footer from "@/components/common/footer";
-import Header from "@/components/common/header";
 import PartnerBrands from "@/components/common/partner-brands";
 import ProductList from "@/components/common/pruduct-list";
 import { db } from "@/db";
@@ -18,9 +17,9 @@ const Home = async () => {
     with: { variants: true },
   });
   const categories = await db.query.categoryTable.findMany({});
+
   return (
     <>
-      <Header />
       <div className="space-y-6">
         <div className="px-5">
           <Image

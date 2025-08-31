@@ -1,9 +1,7 @@
-import Header from "@/components/common/header";
 import ProductItem from "@/components/common/product-item";
-import ProductList from "@/components/common/pruduct-list";
 import { db } from "@/db";
 import { categoryTable, productTable } from "@/db/schema";
-import { eq, not } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 
 interface CategoryPageProps {
@@ -23,7 +21,6 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
   });
   return (
     <div>
-      <Header />
       <div className="space-y-6 px-5">
         <h3 className="text-xl font-semibold">{category.name}</h3>
         <div className="grid grid-cols-2 gap-4">
