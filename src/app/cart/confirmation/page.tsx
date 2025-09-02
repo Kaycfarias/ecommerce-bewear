@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
 import { auth } from "@/lib/auth";
@@ -6,6 +5,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import CartSummary from "../components/cart-summary";
 import { formatAddress } from "../helper/address";
+import FinishOrderButton from "./components/finish-order-button";
 
 const ConfirmationPage = async () => {
   const session = await auth.api.getSession({
@@ -54,9 +54,7 @@ const ConfirmationPage = async () => {
               <p className="text-sm">{formatAddress(cart.shippingAddress)}</p>
             </CardContent>
           </Card>
-          <Button className="w-full rounded-full" size="lg">
-            Finalizar compra
-          </Button>
+          <FinishOrderButton />
         </CardContent>
       </Card>
       <CartSummary

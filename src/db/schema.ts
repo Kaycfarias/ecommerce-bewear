@@ -271,7 +271,7 @@ export const orderItemTable = pgTable("order_item", {
     .notNull()
     .references(() => productVariantTable.id, { onDelete: "restrict" }),
   quantity: integer("quantity").notNull().default(1),
-  pricenCents: integer("price_in_cents").notNull(),
+  priceInCents: integer("price_in_cents").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
