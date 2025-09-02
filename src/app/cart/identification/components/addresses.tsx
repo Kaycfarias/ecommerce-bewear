@@ -20,11 +20,13 @@ import { useUpdateCartShippingAddress } from "@/hooks/mutations/use-update-cart-
 import { useUserAddresses } from "@/hooks/queries/use-user-addresses";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { toast } from "sonner";
 import { z } from "zod";
+import { formatAddress } from "../../helper/address";
 
 const customerSchema = z.object({
   email: z.email("Email inválido"),
@@ -67,7 +69,7 @@ export const Addresses = ({
   });
 
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
-  
+
   useEffect(() => {
     if (defaultShippingAddressId) {
       setSelectedAddress(defaultShippingAddressId);
@@ -91,13 +93,15 @@ export const Addresses = ({
     },
   });
 
+  const router = useRouter();
   const onSubmit = async (values: CustomerFormValues) => {
     try {
-      const newAddress = await createShippingAddressMutation.mutateAsync(values);
-      
+      const newAddress =
+        await createShippingAddressMutation.mutateAsync(values);
+
       form.reset();
       setSelectedAddress(newAddress.id);
-      
+
       await updateCartShippingAddressMutation.mutateAsync({
         shippingAddressId: newAddress.id,
       });
@@ -116,6 +120,7 @@ export const Addresses = ({
         shippingAddressId: selectedAddress,
       });
       toast.success("Endereço vinculado ao carrinho!");
+      router.push("/cart/confirmation");
     } catch {
       toast.error("Erro ao vincular endereço. Tente novamente.");
     }
@@ -156,12 +161,7 @@ export const Addresses = ({
                             </span>
                             {/* TODO: USE ACCORDEON COMPONENT FOR ADDRESS DETAILS */}
                             <span className="text-muted-foreground ml-2">
-                              {address.street}, {address.number}
-                              {address.complement &&
-                                `, ${address.complement}`}{" "}
-                              - {address.neighborhood}, {address.city}/
-                              {address.state} - CEP: {address.zipCode} -{" "}
-                              {address.phone}
+                              {formatAddress(address)}
                             </span>
                           </div>
                         </Label>
