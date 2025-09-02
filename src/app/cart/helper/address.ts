@@ -11,7 +11,7 @@ interface ShippingAddress {
   createdAt: Date;
   updatedAt: Date;
   userId: string;
-  RecipientName: string;
+  recipientName: string;
   street: string;
   country: string;
   cpfOrCnpj: string;

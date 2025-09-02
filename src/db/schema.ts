@@ -137,7 +137,7 @@ export const shippingAddressTable = pgTable("shipping_address", {
   userId: text("user_id")
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" }),
-  RecipientName: text("name").notNull(),
+  recipientName: text("name").notNull(),
   street: text("street").notNull(),
   number: text("number").notNull(),
   complement: text("complement"),
@@ -232,7 +232,7 @@ export const orderTable = pgTable("order", {
   shippingAddressId: uuid("shipping_address_id")
     .notNull()
     .references(() => shippingAddressTable.id, { onDelete: "set null" }),
-  RecipientName: text("name").notNull(),
+  recipientName: text("name").notNull(),
   street: text("street").notNull(),
   number: text("number").notNull(),
   complement: text("complement"),

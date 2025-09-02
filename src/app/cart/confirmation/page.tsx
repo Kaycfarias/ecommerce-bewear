@@ -49,7 +49,7 @@ const ConfirmationPage = async () => {
           <Card>
             <CardContent>
               <span className="font-semibold text-card-foreground">
-                {cart.shippingAddress.RecipientName}
+                {cart.shippingAddress.recipientName}
               </span>
               <p className="text-sm">{formatAddress(cart.shippingAddress)}</p>
             </CardContent>

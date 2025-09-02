@@ -157,7 +157,7 @@ export const Addresses = ({
                         <Label htmlFor={address.id} className="cursor-pointer">
                           <div className="text-sm">
                             <span className="font-semibold text-card-foreground">
-                              {address.RecipientName}
+                              {address.recipientName}
                             </span>
                             {/* TODO: USE ACCORDEON COMPONENT FOR ADDRESS DETAILS */}
                             <span className="text-muted-foreground ml-2">
