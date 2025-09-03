@@ -27,7 +27,7 @@ export const createShippingAddress = async (
     .insert(shippingAddressTable)
     .values({
       userId: session.user.id,
-      RecipientName: data.fullName,
+      recipientName: data.fullName,
       email: data.email,
       cpfOrCnpj: data.cpf,
       phone: data.phone,
