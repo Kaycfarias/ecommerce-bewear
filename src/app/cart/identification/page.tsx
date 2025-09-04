@@ -56,6 +56,7 @@ const IndetificationPage = async () => {
               id: item.id,
               name: item.productVariant.product.name,
               variantName: item.productVariant.name,
+              variantId: item.productVariant.id,
               quantity: item.quantity,
               priceInCents: item.productVariant.priceInCents,
               imageUrl: item.productVariant.imageUrl,

@@ -10,6 +10,7 @@ interface CartSummaryProps {
     id: string;
     name: string;
     variantName: string;
+    variantId: string;
     quantity: number;
     priceInCents: number;
     imageUrl: string;
@@ -68,6 +69,7 @@ const CartSummary = ({
               <p className="text-sm font-bold">
                 {formatCentsToBRL(product.priceInCents)}
               </p>
+              <p className="text-xs font-medium">Qtd: {product.quantity}</p>
             </div>
           </div>
         ))}
