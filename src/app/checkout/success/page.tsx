@@ -29,7 +29,7 @@ const CheckoutSuccessPage = () => {
         </DialogDescription>
         <DialogFooter className="sm:justify-center">
           <Button className="rounded-full" size={"lg"} variant={"default"}>
-            Ver meus pedidos
+            <Link href="/orders">Ver meus pedidos</Link>
           </Button>
           <Button
             className="rounded-full"

@@ -20,8 +20,8 @@ import Cart from "./cart";
 const Header = () => {
   const { data: session } = authClient.useSession();
   return (
-    <header className="flex items-center justify-center p-5">
-      <div className="flex items-center w-full max-w-6xl justify-between">
+    <header className="flex items-center justify-center p-5 mb-5">
+      <div className="flex items-center w-full justify-between">
         <Link href="/">
           <Image src="/next.svg" alt="Logo" width={120} height={26.14} />
         </Link>
