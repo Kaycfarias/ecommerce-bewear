@@ -1,35 +1,36 @@
 import CategorySelector from "@/components/common/category-selector";
-import Footer from "@/components/common/footer";
 import PartnerBrands from "@/components/common/partner-brands";
 import ProductList from "@/components/common/pruduct-list";
-import { db } from "@/db";
-import { productTable } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { getCategories } from "@/data/categories/get-cartegory";
+import {
+  getNewlyCreatedProducts,
+  getProductsWithVariants,
+} from "@/data/products/get-product";
+
 import Image from "next/image";
+import Link from "next/link";
 
 const Home = async () => {
-  const products = await db.query.productTable.findMany({
-    with: { variants: true },
-  });
-
-  const newlyCreateProduct = await db.query.productTable.findMany({
-    orderBy: [desc(productTable.createdAt)],
-    with: { variants: true },
-  });
-  const categories = await db.query.categoryTable.findMany({});
+  const [products, newlyCreateProduct, categories] = await Promise.all([
+    getProductsWithVariants(),
+    getNewlyCreatedProducts(),
+    getCategories(),
+  ]);
 
   return (
     <>
       <div className="space-y-6">
         <div className="px-5">
-          <Image
-            src="/banner01.png"
-            alt="Leve sua vida com estilo"
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="h-auto w-full object-cover"
-          />
+          <Link href="category/jaquetas-moletons">
+            <Image
+              src="/banner01.png"
+              alt="Leve sua vida com estilo"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="h-auto w-full object-cover"
+            />
+          </Link>
         </div>
         <PartnerBrands />
 
@@ -39,14 +40,16 @@ const Home = async () => {
         </div>
 
         <div className="px-5">
-          <Image
-            src="/banner02.png"
-            alt="Leve sua vida com estilo"
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="h-auto w-full object-cover"
-          />
+          <Link href="category/jaquetas-moletons">
+            <Image
+              src="/banner02.png"
+              alt="Leve sua vida com estilo"
+              width={0}
+              height={0}
+              sizes="100vw"
+              className="h-auto w-full object-cover"
+            />
+          </Link>
         </div>
         <ProductList products={newlyCreateProduct} title="Novos produtos" />
       </div>

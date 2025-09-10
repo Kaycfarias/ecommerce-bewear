@@ -1,6 +1,6 @@
 import { categoryTable } from "@/db/schema";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 interface CategorySelectorProps {
   categories: (typeof categoryTable.$inferSelect)[];
@@ -12,6 +12,7 @@ const CategorySelector = ({ categories }: CategorySelectorProps) => {
       <div className="grid grid-cols-2 gap-3">
         {categories.map((category) => (
           <Button
+            asChild
             key={category.id}
             variant={"ghost"}
             className="rounded-full bg-white font-semibold"

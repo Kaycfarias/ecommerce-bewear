@@ -10,5 +10,7 @@ export const useCart = (params?: {
     queryKey: getUseCartQueryKey(),
     queryFn: () => getCart(),
     initialData: params?.initialData,
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 };

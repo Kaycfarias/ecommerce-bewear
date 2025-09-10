@@ -59,51 +59,70 @@ const CartItem = ({
   };
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-4">
+    <div className="flex flex-col sm:flex-row sm:items-start gap-4 p-4">
+      <div className="flex-shrink-0">
         <Image
           src={productVariantImageUrl}
           alt={productVariantName}
-          width={78}
-          height={78}
-          className="rounded-lg"
+          width={80}
+          height={80}
+          className="rounded-lg object-cover"
         />
       </div>
-      <div className="flex flex-col gap-1">
-        <p className="text-sm font-semibold">{productName}</p>
-        <p className="text-xs font-medium text-muted-foreground">
-          {productVariantName}
-        </p>
-        <div className="flex w-[100px] items-center justify-between rounded-lg border p-1">
+
+      <div className="flex-1 min-w-0 space-y-2">
+        <div>
+          <h3 className="font-medium text-gray-900 break-words">
+            {productName}
+          </h3>
+          <p className="text-sm text-gray-600">{productVariantName}</p>
+          <p className="text-sm font-medium text-gray-900">
+            {formatCentsToBRL(productVariantPriceInCents)}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-none"
+              onClick={handleDecreaseQuantityClick}
+              disabled={decreaseCartProductQuantityMutation.isPending}
+            >
+              <MinusIcon className="h-3 w-3" />
+            </Button>
+
+            <span className="px-3 py-1 text-sm font-medium min-w-[40px] text-center border-x border-gray-300">
+              {quantity}
+            </span>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 rounded-none"
+              onClick={handleIncreaseQuantityClick}
+              disabled={increaseCartProductQuantityMutation.isPending}
+            >
+              <PlusIcon className="h-3 w-3" />
+            </Button>
+          </div>
+
           <Button
             variant="ghost"
-            className="h-4 w-4"
-            onClick={handleDecreaseQuantityClick}
+            size="sm"
+            onClick={handleDeleteClick}
+            disabled={removeProductFromCartMutation.isPending}
+            className="text-red-600 hover:text-red-700 hover:bg-red-50 flex items-center gap-1"
           >
-            <MinusIcon />
-          </Button>
-
-          <p className="text-xs font-medium">{quantity}</p>
-
-          <Button
-            variant="ghost"
-            className="h-4 w-4"
-            onClick={handleIncreaseQuantityClick}
-          >
-            <PlusIcon />
+            <TrashIcon className="h-4 w-4" />
+            <span className="hidden sm:inline text-xs">Remover</span>
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-end justify-center gap-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleDeleteClick}
-          disabled={removeProductFromCartMutation.isPending}
-        >
-          <TrashIcon />
-        </Button>
-        <p className="text-sm font-bold">
+
+      <div className="flex-shrink-0 text-right sm:text-right">
+        <p className="text-lg font-semibold text-gray-900">
           {formatCentsToBRL(productVariantPriceInCents * quantity)}
         </p>
       </div>

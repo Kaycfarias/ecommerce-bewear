@@ -2,8 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { useCart } from "@/hooks/queries/use-cart";
 import { AvatarFallback } from "@radix-ui/react-avatar";
-import { LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
+import {
+  LogInIcon,
+  LogOutIcon,
+  MenuIcon,
+  ShoppingBasketIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarImage } from "../ui/avatar";
@@ -15,10 +21,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import Cart from "./cart";
 
 const Header = () => {
   const { data: session } = authClient.useSession();
+  const { data: cart } = useCart();
+  
+  const hasCartItems = cart && cart.items && cart.items.length > 0;
+
   return (
     <header className="flex items-center justify-center p-5 mb-5">
       <div className="flex items-center w-full justify-between">
@@ -26,7 +35,14 @@ const Header = () => {
           <Image src="/next.svg" alt="Logo" width={120} height={26.14} />
         </Link>
         <div className="flex items-center gap-3">
-          <Cart />
+          <Button variant="outline" size="icon" className="relative">
+            <Link href="/cart">
+              <ShoppingBasketIcon />
+            </Link>
+            {hasCartItems && (
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+            )}
+          </Button>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
@@ -74,7 +90,7 @@ const Header = () => {
                   <div className="flex items-center justify-between">
                     <h2 className="font-semibold">Olá, faça seu login</h2>
                     <Button size="icon" variant="outline" asChild>
-                      <Link href="/authentication">
+                      <Link href="/login">
                         <LogInIcon />
                       </Link>
                     </Button>

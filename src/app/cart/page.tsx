@@ -9,9 +9,9 @@ import {
 } from "./components";
 
 const CartPage = () => {
-  const { data: cart, isLoading } = useCart();
+  const { data: cart, isLoading, isFetching } = useCart();
 
-  if (isLoading) {
+  if (isLoading || (isFetching && !cart)) {
     return <CartLoadingState />;
   }
 
