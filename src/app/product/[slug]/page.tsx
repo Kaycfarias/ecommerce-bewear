@@ -1,4 +1,3 @@
-import Footer from "@/components/common/footer";
 import ProductList from "@/components/common/pruduct-list";
 import { db } from "@/db";
 import { productTable } from "@/db/schema";
@@ -31,7 +30,6 @@ const ProductVariantPage = async ({ params }: ProductVariantPageProps) => {
         <ProductActions product={product} />
         <ProductList products={likelyProducts} title="Produtos relacionados" />
       </div>
-      <Footer />
     </>
   );
 };

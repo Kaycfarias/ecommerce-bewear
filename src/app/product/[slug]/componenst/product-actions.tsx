@@ -7,6 +7,7 @@ import { MinusIcon, PlusIcon } from "lucide-react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import Image from "next/image";
 import { formatCentsToBRL } from "@/app/helper/money";
+import BuyProductNowButton from "./buy-product-now-button";
 
 interface ProductActionsProps {
   product: typeof productTable.$inferSelect & {
@@ -105,9 +106,7 @@ const ProductActions = ({ product }: ProductActionsProps) => {
           </div>
         </div>
         <AddToCartButton quantity={quantity} productVariantId={selectedVariant.id} />
-        <Button className="rounded-full" size={"lg"}>
-          Comprar agora
-        </Button>
+        <BuyProductNowButton />
       </div>
       <div className="px-5">
         <p className="text-shadow-amber-600">{product.description}</p>

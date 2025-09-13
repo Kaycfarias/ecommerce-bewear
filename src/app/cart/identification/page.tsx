@@ -1,5 +1,11 @@
 import { db } from "@/db";
-import { shippingAddressTable } from "@/db/schema";
+import {
+  cartItemTable,
+  cartTable,
+  productTable,
+  productVariantTable,
+  shippingAddressTable,
+} from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
@@ -7,28 +13,41 @@ import { redirect } from "next/navigation";
 import CartSummary from "../components/cart-summary";
 import { Addresses } from "./components/addresses";
 
-const IndetificationPage = async () => {
+interface IndetificationPageProps {
+  cart?: (typeof cartTable.$inferSelect & {
+    shippingAddress: typeof shippingAddressTable.$inferSelect | null;
+    items: (typeof cartItemTable.$inferSelect & {
+      productVariant: typeof productVariantTable.$inferSelect & {
+        product: typeof productTable.$inferSelect;
+      };
+    })[];
+  }) | undefined;
+}
+
+const IndetificationPage = async ({ cart }: IndetificationPageProps) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
   if (!session?.user.id) {
     redirect("/");
   }
-  const cart = await db.query.cartTable.findFirst({
-    where: (cart, { eq }) => eq(cart.userId, session.user.id),
-    with: {
-      items: {
-        with: {
-          productVariant: {
-            with: {
-              product: true,
+  if (!cart) {
+    cart = await db.query.cartTable.findFirst({
+      where: (cart, { eq }) => eq(cart.userId, session.user.id),
+      with: {
+        items: {
+          with: {
+            productVariant: {
+              with: {
+                product: true,
+              },
             },
           },
         },
+        shippingAddress: true,
       },
-      shippingAddress: true,
-    },
-  });
+    });
+  }
   if (!cart || cart.items.length === 0) {
     redirect("/");
   }
@@ -51,17 +70,15 @@ const IndetificationPage = async () => {
         <CartSummary
           subtotalInCents={cartTotalInCents}
           totalInCents={cartTotalInCents}
-          products={
-            cart.items.map((item) => ({
-              id: item.id,
-              name: item.productVariant.product.name,
-              variantName: item.productVariant.name,
-              variantId: item.productVariant.id,
-              quantity: item.quantity,
-              priceInCents: item.productVariant.priceInCents,
-              imageUrl: item.productVariant.imageUrl,
-            }))
-          }
+          products={cart.items.map((item) => ({
+            id: item.id,
+            name: item.productVariant.product.name,
+            variantName: item.productVariant.name,
+            variantId: item.productVariant.id,
+            quantity: item.quantity,
+            priceInCents: item.productVariant.priceInCents,
+            imageUrl: item.productVariant.imageUrl,
+          }))}
         />
       </div>
     </>
