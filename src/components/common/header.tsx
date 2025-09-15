@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 import { useCart } from "@/hooks/queries/use-cart";
+import { authClient } from "@/lib/auth-client";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import {
   LogInIcon,
@@ -25,7 +25,7 @@ import {
 const Header = () => {
   const { data: session } = authClient.useSession();
   const { data: cart } = useCart();
-  
+
   const hasCartItems = cart && cart.items && cart.items.length > 0;
 
   return (
@@ -35,13 +35,13 @@ const Header = () => {
           <Image src="/next.svg" alt="Logo" width={120} height={26.14} />
         </Link>
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="icon" className="relative">
+          <Button asChild variant="outline" size="icon" className="relative">
             <Link href="/cart">
               <ShoppingBasketIcon />
+              {hasCartItems && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+              )}
             </Link>
-            {hasCartItems && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
-            )}
           </Button>
           <Sheet>
             <SheetTrigger asChild>
@@ -89,11 +89,13 @@ const Header = () => {
                 ) : (
                   <div className="flex items-center justify-between">
                     <h2 className="font-semibold">Olá, faça seu login</h2>
-                    <Button size="icon" variant="outline" asChild>
-                      <Link href="/login">
-                        <LogInIcon />
-                      </Link>
-                    </Button>
+                    <SheetClose asChild>
+                      <Button asChild size="icon" variant="outline">
+                        <Link href="/login">
+                          <LogInIcon />
+                        </Link>
+                      </Button>
+                    </SheetClose>
                   </div>
                 )}
               </div>

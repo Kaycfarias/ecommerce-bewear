@@ -24,29 +24,34 @@ const AddToCartButton = ({
         productVariantId,
         quantity,
       }),
-    onError: (error) => {
-      if (error.message === "USER_NOT_AUTHENTICATED") {
-        toast.error(
-            <div className="flex flex-col gap-2 items-start">
-            <span>Você precisa estar autenticado para adicionar produtos ao carrinho.</span>
-            <Button
-              variant="default"
-              size="sm"
-              className="mt-1"
-              onClick={() => redirect("/login")}
-            >
-              Entrar
-            </Button>
-            </div>
-        );
+    onSuccess: (result) => {
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["cart"] });
+        toast.success("Produto adicionado ao carrinho com sucesso!");
       } else {
-        toast.error("Erro ao adicionar produto ao carrinho.");
+        // Tratar erro retornado pela action
+        switch (result.code) {
+          case "USER_NOT_AUTHENTICATED":
+            toast.error("Você precisa fazer login para adicionar produtos.", {
+              action: {
+                label: "Fazer Login",
+                onClick: () => redirect("/login"),
+              },
+            });
+            break;
+          case "PRODUCT_VARIANT_NOT_FOUND":
+            toast.error("Este produto não está mais disponível.");
+            break;
+          default:
+            toast.error(result.error);
+        }
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    onError: () => {
+      toast.error("Erro de conexão. Tente novamente.");
     },
   });
+
   return (
     <Button
       className="rounded-full"
