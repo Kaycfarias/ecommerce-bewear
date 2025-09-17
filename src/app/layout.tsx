@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Footer from "@/components/common/footer";
-import Header from "@/components/common/header";
+import { Header } from "@/components/common/header";
 import ReactQueryProvider from "@/providers/react-query";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
@@ -36,9 +36,7 @@ export default function RootLayout({
         <NuqsAdapter>
           <ReactQueryProvider>
             <Header />
-            <main className="flex-1">
-              {children}
-            </main>
+            <main className="flex-1">{children}</main>
             <Footer />
           </ReactQueryProvider>
         </NuqsAdapter>
