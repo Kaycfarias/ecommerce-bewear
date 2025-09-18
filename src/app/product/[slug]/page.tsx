@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 
 import { notFound } from "next/navigation";
 
-import ProductActions from "./componenst/product-actions";
+import ProductActions from "./components/product-actions";
 
 interface ProductVariantPageProps {
   params: Promise<{ slug: string }>;
